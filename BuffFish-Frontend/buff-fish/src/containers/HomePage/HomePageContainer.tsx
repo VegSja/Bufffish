@@ -11,8 +11,6 @@ interface CusomizedState {
 export default function HomePageContainer() {
     const[name, setName] = useState("");
 
-    console.log(useLocation());
-
     const location = useLocation();
     const state = location.state as CusomizedState;
     if(state) {

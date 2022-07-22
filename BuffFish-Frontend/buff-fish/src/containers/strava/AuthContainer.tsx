@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import axios from "axios"
+import { useAuthContext } from "../../hooks/useAuth";
 
 export default function AuthContainer() {
+
+    const {setUserId} = useAuthContext();
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -12,8 +15,8 @@ export default function AuthContainer() {
             axios.post('/auth/strava', {
                 code: code
             }).then((res) => {
-                console.log(res);
-                navigate('/', {state:{loggedInUser:res.data.data.user_id}});
+                setUserId(res.data.data.user_id)
+                navigate('/dashboard');
             }).catch((err) => {
                 console.error(err);
             })

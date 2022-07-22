@@ -28,80 +28,88 @@ const createDate = async(date, callback) => {
   })
 }
 
-function getUserActivities(req, res) {
-  const request_user = req.params.userId;
-  getAuthCode(request_user, (access_code) => {
+async function getStravaActivities(userId, access_code) {
+  getAuthCode(userId, (access_code) => {
     axios.get("https://www.strava.com/api/v3/athlete/activities", {
       headers: {
         "Authorization": `Bearer ${access_code}`
       }
     }).then((response) => {
-      //Create dateentry in database
-      createDate(date, (date_id) => {
-        const sql = `
-        INSERT INTO activity
-          (id,
-          strava_id,
-          athlete,
-          name,
-          type,
-          distance,
-          moving_time,
-          elapsed_time,
-          elevation_gain,
-          start_date,
-          start_lat,
-          start_lng,
-          end_lat,
-          end_lng,
-          average_speed,
-          max_speed)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
-        `
-        const activities = [];
         response.data.forEach(activity => {
           const generated_id = uuidv4();
-          console.log("Adding activity", activity.name)
-          const params = [
-            generated_id,
-            activity.id,
-            request_user,
-            activity.name,
-            activity.type,
-            activity.distance,
-            activity.moving_time,
-            activity.elapsed_time,
-            activity.total_elevation_gain,
-            date_id,
-            activity.start_latlng[0],
-            activity.start_latlng[1],
-            activity.end_latlng[0],
-            activity.end_latlng[1],
-            activity.average_speed,
-            activity.max_speed
-          ]
-          db.run(sql, params, (err, result) => {})
+          createDate(activity.start_date, (date_id) => {
+            const sql = `
+            INSERT INTO activity
+              (id,
+              strava_id,
+              athlete,
+              name,
+              type,
+              distance,
+              moving_time,
+              elapsed_time,
+              elevation_gain,
+              date_id,
+              start_lat,
+              start_lng,
+              end_lat,
+              end_lng,
+              average_speed,
+              max_speed)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);
+            `
+            const params = [
+              generated_id,
+              activity.id,
+              userId,
+              activity.name,
+              activity.type,
+              activity.distance,
+              activity.moving_time,
+              activity.elapsed_time,
+              activity.total_elevation_gain,
+              date_id,
+              activity.start_latlng[0],
+              activity.start_latlng[1],
+              activity.end_latlng[0],
+              activity.end_latlng[1],
+              activity.average_speed,
+              activity.max_speed
+            ]
+            db.run(sql, params, (err, result) => {
+              if(err) {
+                console.error(err.message);
+              } else {
+                console.log(`Successfully added ${activity.name} to database`)
+              }
+            })
+          })
         })
-        db.each(`SELECT id FROM activity WHERE athlete=?`, [request_user],
-                (err, data) => {
-                  if(err) {
-                    console.error(err.message);
-                    res.status(500).json({
-                      message: err.message
-                    })
-                  } else {
-                    activities.push(data["id"]);
-                  }
-                },
-                (err, numberOfRows) => {
-                  console.log("Successfully found ", numberOfRows, " rows")
-                  res.status(200).json({
-                    "data": activities
-                  })
-                })
-      })
     })
-  });
+  })
+}
+
+async function getUserActivities(req, res) {
+  const user = req.params.userId
+  await getStravaActivities(user)
+  const activities = []
+  db.each(`SELECT id FROM activity`,
+          (err, data) => {
+            if(err) {
+              console.error(err.message);
+              res.status(500).json({
+                message: err.message
+              })
+            } else {
+              activities.push(data["id"]);
+            }
+          },
+          (err, numberOfRows) => {
+            console.log("Successfully found ", numberOfRows, " rows")
+            res.status(200).json({
+              "data": activities
+            })
+          })
 }
 
 const getActivityDetail = (req, res) => {
@@ -118,6 +126,35 @@ const getActivityDetail = (req, res) => {
              res.status(200).json(row)
            }
          })
+}
+
+const getWeeklyActivities = (req, res) => {
+  const request_user = req.params.userId;
+  const activities = []
+  db.each(`
+    SELECT *
+    FROM activity
+    RIGHT OUTER JOIN dates ON(date_id)
+    WHERE activity.athlete = ?;
+  `, [request_user],
+     (err, data) => {
+         if(err) {
+           console.error(err.message);
+           res.status(500).json({
+             message: err.message
+           })
+         } else {
+           activities.push(data);
+         }
+     },
+    (err, numberOfRows) => {
+      if(!err) {
+        res.status(200).json({
+          "data": activities
+        })
+      }
+    }
+  );
 }
 
 module.exports = {

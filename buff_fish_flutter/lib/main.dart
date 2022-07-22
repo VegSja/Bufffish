@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:buff_fish_flutter/src/design/Theme.dart';
+import 'package:buff_fish_flutter/src/features/workouts/activities.dart';
 import 'package:buff_fish_flutter/src/pages/HomePage.dart';
 import 'package:buff_fish_flutter/src/pages/WorkoutPage.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 //Local imports
 import 'package:buff_fish_flutter/src/features/stats/DayRangePicker/DayRangePicker.dart';
@@ -12,6 +15,7 @@ import 'package:uni_links/uni_links.dart';
 
 bool _initialUriIsHandled = false;
 void main() => runApp(const App());
+
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -39,6 +43,7 @@ class _RoutingWidgetState extends State<RoutingWidget> {
   Uri? _initialUri;
   Uri? _latestUri;
   Object? _err;
+  String? user_id;
 
   StreamSubscription? _sub;
 
@@ -55,7 +60,8 @@ class _RoutingWidgetState extends State<RoutingWidget> {
       // the foreground or in the background.
       _sub = uriLinkStream.listen((Uri? uri) {
         if (!mounted) return;
-        print('got uri: $uri');
+        String code = getCodeFromStravaUri(uri!);
+        authorizeUserWithBackend(code);
         setState(() {
           _latestUri = uri;
           _err = null;
@@ -107,6 +113,35 @@ class _RoutingWidgetState extends State<RoutingWidget> {
       }
     }
   }
+
+  String getCodeFromStravaUri(Uri uri) {
+    return uri.queryParameters["code"]!;
+  }
+
+  void authorizeUserWithBackend (String userCode) async {
+    var url = Uri.parse("http://10.0.0.35:8000/auth/strava/");
+    var response = await http.post(url, body: {
+        "code": userCode
+    });
+    final parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
+    setState(() {
+        user_id = parsed["user_id"];
+    });
+    print('Recieved response: ${response.body}');
+  }
+
+  Future<List<Activity>> fetchActivities() async {
+    final response = await http
+      .get(Uri.parse('http://10.0.0.35:8000/user/${user_id}/activities'));
+
+    final parsedJson = jsonDecode(response.body).cast<Map<String, dynamic>>();
+
+    return parsedJson.map<Activity>((json) => Activity.fromJson(json)).toList();
+
+    }
+
+
+  //////////////////////////////////////////////////////////////////////
 
   int _selectedIndex = 0;
 
