@@ -7,4 +7,4 @@ const {
 router.route('/strava/')
       .post(postStravaAuth)
 
-module.exports = router
+export default router

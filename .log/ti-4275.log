@@ -184,3 +184,18 @@ found 0 vulnerabilities
     {"projectName":"/dev/null/inferredProject3*","typeAcquisition":{"enable":true,"include":[],"exclude":[]},"compilerOptions":{"module":1,"target":3,"jsx":1,"allowJs":true,"allowSyntheticDefaultImports":true,"allowNonTsExtensions":true,"noEmitForJsFiles":true},"typings":[],"unresolvedImports":[],"kind":"action::set"}
 [22:36:35.412] Response has been sent.
 [22:36:35.412] No new typings were requested as a result of typings discovery
+[23:56:24.382] Got install request {"projectName":"/dev/null/inferredProject4*","fileNames":[],"compilerOptions":{"module":1,"target":3,"jsx":1,"allowJs":true,"allowSyntheticDefaultImports":true,"allowNonTsExtensions":true,"noEmitForJsFiles":true},"typeAcquisition":{"enable":true,"include":[],"exclude":[]},"unresolvedImports":[],"projectRootPath":"/home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar","kind":"discover"}
+[23:56:24.382] Explicitly included types: []
+[23:56:24.383] Inferred typings from unresolved imports: []
+[23:56:24.383] Result: {"cachedTypingPaths":[],"newTypingNames":[],"filesToWatch":["/home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/bower_components","/home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/node_modules"]}
+[23:56:24.383] Finished typings discovery: {"cachedTypingPaths":[],"newTypingNames":[],"filesToWatch":["/home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/bower_components","/home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/node_modules"]}
+[23:56:24.383] DirectoryWatcher:: Added:: WatchInfo: /home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/bower_components
+[23:56:24.383] DirectoryWatcher:: Added:: WatchInfo: /home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/bower_components 1 undefined Project: /dev/null/inferredProject4* watcher already invoked: false
+[23:56:24.383] Elapsed:: 0.2722509987652302ms DirectoryWatcher:: Added:: WatchInfo: /home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/bower_components 1 undefined Project: /dev/null/inferredProject4* watcher already invoked: false
+[23:56:24.384] DirectoryWatcher:: Added:: WatchInfo: /home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/node_modules
+[23:56:24.384] DirectoryWatcher:: Added:: WatchInfo: /home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/node_modules 1 undefined Project: /dev/null/inferredProject4* watcher already invoked: false
+[23:56:24.384] Elapsed:: 0.22961100190877914ms DirectoryWatcher:: Added:: WatchInfo: /home/vs/Development/BuffFish/BuffFish-Frontend/buff-fish/src/components/Navbar/node_modules 1 undefined Project: /dev/null/inferredProject4* watcher already invoked: false
+[23:56:24.384] Sending response:
+    {"projectName":"/dev/null/inferredProject4*","typeAcquisition":{"enable":true,"include":[],"exclude":[]},"compilerOptions":{"module":1,"target":3,"jsx":1,"allowJs":true,"allowSyntheticDefaultImports":true,"allowNonTsExtensions":true,"noEmitForJsFiles":true},"typings":[],"unresolvedImports":[],"kind":"action::set"}
+[23:56:24.385] Response has been sent.
+[23:56:24.385] No new typings were requested as a result of typings discovery

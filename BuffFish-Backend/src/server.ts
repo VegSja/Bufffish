@@ -1,18 +1,16 @@
-const express = require('express')
-
-// Routes
-const authRouter = require('./routes/AuthRoutes')
-const userRouter = require('./routes/UserRoutes')
+import mongoose from 'mongoose'
+import express from 'express'
+import userRouter from './routes/UserRoutes'
 
 //Middleware
-const cookieParser = require('cookie-parser')
-const cors = require('cors')
+import cookieParser  from 'cookie-parser'
+import cors  from 'cors'
 
 // App variables
 const app = express()
 require('dotenv').config()
 
-const DATABASE_URL = "127.0.0.1"
+const DATABASE_URL = 'mongodb+srv://buffish_admin:SterkFisk123@buffishcluster1.xhebixf.mongodb.net/?retryWrites=true&w=majority'
 const ALLOW_ORIGIN = "127.0.0.1"
 
 // App config
@@ -26,7 +24,12 @@ app.use(cookieParser())
 
 // Setting up routes
 app.use('/user', userRouter);
-app.use('/auth', authRouter);
+// app.use('/auth', authRouter);
+
+
+mongoose.connect(DATABASE_URL, {}, () => {
+    console.log("Connected to database")
+})
 
 
 const PORT = 8000;
